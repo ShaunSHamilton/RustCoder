@@ -1,24 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useRef } from "react";
+import "./App.css";
+import Content from "./Components/Content";
+import Editor from "@monaco-editor/react";
 
+const editorOptions = {
+  cursorWidth: 2,
+  cursorBlinking: "blink",
+  cursorStyle: "line",
+  lineNumbers: "on",
+  tabCompletions: "on",
+  snippetSuggestions: true,
+  scrollBeyondLastLine: false,
+};
 function App() {
+  const [isEditorReady, setIsEditorReady] = useState(false);
+  const valueGetter = useRef(() => "// Test");
+
+  const handleEditorDidMount = (_valueGetter: any) => {
+    setIsEditorReady(true);
+    valueGetter.current = _valueGetter;
+  };
+
+  const onSubmit = (): void => {
+    alert(valueGetter.current());
+  };
+  const handleDocs = (): void => {};
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div id="app">
+      <Content
+        onSubmit={onSubmit}
+        handleDocs={handleDocs}
+        isEditorReady={isEditorReady}
+      />
+      <Editor
+        height="100vh"
+        language="rust"
+        options={editorOptions}
+        theme="dark"
+        value={"// write your code here"}
+        editorDidMount={handleEditorDidMount}
+      />
     </div>
   );
 }
