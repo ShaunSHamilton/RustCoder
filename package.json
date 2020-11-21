@@ -1,0 +1,47 @@
+{
+  "name": "rustcoder",
+  "version": "1.0.0",
+  "description": "A place to learn Rust",
+  "main": "./public/bundle.js",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "node ./server/server.js",
+    "build-dev": "webpack --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sky020/RustCoder.git"
+  },
+  "keywords": [
+    "Rust",
+    "Tauri",
+    "App"
+  ],
+  "author": "Shaun Hamilton",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/Sky020/RustCoder/issues"
+  },
+  "homepage": "https://github.com/Sky020/RustCoder#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.7",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.12.7",
+    "babel-loader": "^8.2.1",
+    "css-loader": "^5.0.1",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.6.0",
+    "webpack-cli": "^4.2.0"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "^3.7.0",
+    "express": "^4.17.1",
+    "monaco-editor": "^0.21.2",
+    "node-pty": "^0.9.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-resize-panel": "^0.3.5",
+    "tauri": "^0.13.0",
+    "xterm": "^4.9.0"
+  }
+}
