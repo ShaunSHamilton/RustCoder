@@ -1,9 +1,11 @@
 const express = require("express");
 const os = require("os");
 const pty = require("node-pty");
-const window = require("tauri/api/window");
-const { emit, listen } = require("tauri/api/event");
+// const window = require("tauri/api/window");
+// const { emit, listen } = require("tauri/api/event");
 const app = express();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
 const PORT = 3000;
 
 app.use(express.static("public"));
@@ -17,20 +19,47 @@ const ptyProcess = pty.spawn(shell, [], {
   env: process.env,
 });
 
-ptyProcess.onData((data) => {
-  console.log("server: ", data);
-  emit("term.incData", data);
-});
+io.on("connection", (socket) => {
+  ptyProcess.onData((data) => {
+    console.log("server: ", data);
+    io.emit("term.incData", data);
+  });
 
-listen("term.toTerm", (e) => {
-  console.log("server 2: ", e.payload);
-  ptyProcess.write(e.payload.data);
+  socket.on("term.toTerm", (e) => {
+    console.log("server 2: ", e);
+    ptyProcess.write(e);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("A user has disconnected");
+  });
 });
+// io.on('connection', socket => {
+//     ++currentUsers;
+//     console.log("NAME: ",socket.request)
+//     io.emit('user', {
+//       name: socket.request.user.name,
+//       currentUsers,
+//       connected: true
+//     });
+//     socket.on('chat message', (message) => {
+//       io.emit('chat message', { name: socket.request.user.name, message })
+//     })
+//     console.log('A user has connected');
+//     socket.on('disconnect', () => {
+//       console.log('A user has disconnected');
+//       --currentUsers;
+//       io.emit('user', {
+//         name: socket.request.user.name,
+//         currentUsers,
+//         connected: false
+//       });
+//     });
 
 app.route("/").get((req, res) => {
   res.sendFile(process.cwd() + "/public/index.html");
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on ${PORT}...`);
+http.listen(PORT, () => {
+  console.log(`listening on ${PORT}`);
 });
