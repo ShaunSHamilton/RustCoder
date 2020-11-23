@@ -1,41 +1,62 @@
-import React, { useEffect } from "react";
-// import { emit, listen } from "tauri/api/event";
+import React, { useEffect, useRef, useState } from "react";
 import { Terminal } from "xterm";
 import "../../node_modules/xterm/css/xterm.css";
 import { io } from "socket.io-client";
 
-// var os = require("os");
-// var pty = require("node-pty");
-
-// var shell = os.platform() === "win32" ? "powershell.exe" : "bash";
-
-// var ptyProcess = pty.spawn(shell, [], {
-//   name: "xterm-color",
-//   cols: 80,
-//   rows: 30,
-//   cwd: process.env.HOME,
-//   env: process.env,
-// });
 const terminal = new Terminal();
 const Console = (props) => {
+  const [text, setText] = useState("");
+  const shouldRender = useRef(true);
   const socket = io();
-  useEffect(() => {
-    terminal.open(document.getElementById("console"));
-    terminal.onData((e) => {
-      console.log("console 1: ", e);
-      socket.emit("term.toTerm", e);
-    });
-  }, []);
-  socket.on("term.incData", (data) => {
-    terminal.write(data);
-  });
-
   // useEffect(() => {
-  //   console.log("console 2: ", props.text);
-  //   terminal.write(props.text);
-  // }, [props.text]);
+  //   terminal.open(document.getElementById("console"));
+  //   terminal.onData((e) => {
+  //     console.log("console 1: ", e);
+  //     socket.emit("term.toTerm", e);
+  //   });
+  // }, []);
+  // socket.on("term.incData", (data) => {
+  //   terminal.write(data);
+  // });
+  useEffect(() => {
+    socket.emit("term.toTerm", text);
+  }, []);
+  const handleInput = (e) => {
+    // console.log("console 1: ", e);
+    setText(e.target.value);
+  };
+  const handleEnter = (e) => {
+    if (e.which == 13) {
+      if (!shouldRender.current) {
+        shouldRender.current = true;
+      }
+      socket.emit("term.toTerm", stripTerminal(text) + String.fromCharCode(13));
+    }
+  };
 
-  return <div id="console"></div>;
+  function stripTerminal(text) {
+    const test = text.replace(/PS.*?>\s*?/, "");
+    console.log("String: ", test);
+    return test;
+  }
+
+  socket.on("term.incData", (data) => {
+    console.log("console 2: ", typeof data, data);
+    if (shouldRender.current) {
+      shouldRender.current = false;
+      setText(data);
+    }
+  });
+  return (
+    <div id="console">
+      <input
+        type="text"
+        value={text}
+        onChange={handleInput}
+        onKeyPress={handleEnter}
+      ></input>
+    </div>
+  );
 };
 
 export default Console;
