@@ -1,62 +1,38 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Terminal } from "xterm";
 import "../../node_modules/xterm/css/xterm.css";
 import { io } from "socket.io-client";
 
 const terminal = new Terminal();
-const Console = (props) => {
-  const [text, setText] = useState("");
-  const shouldRender = useRef(true);
-  const socket = io();
-  // useEffect(() => {
-  //   terminal.open(document.getElementById("console"));
-  //   terminal.onData((e) => {
-  //     console.log("console 1: ", e);
-  //     socket.emit("term.toTerm", e);
-  //   });
-  // }, []);
-  // socket.on("term.incData", (data) => {
-  //   terminal.write(data);
-  // });
-  useEffect(() => {
-    socket.emit("term.toTerm", text);
-  }, []);
-  const handleInput = (e) => {
-    // console.log("console 1: ", e);
-    setText(e.target.value);
-  };
-  const handleEnter = (e) => {
-    if (e.which == 13) {
-      if (!shouldRender.current) {
-        shouldRender.current = true;
-      }
-      socket.emit("term.toTerm", stripTerminal(text) + String.fromCharCode(13));
-    }
-  };
 
-  function stripTerminal(text) {
-    const test = text.replace(/PS.*?>\s*?/, "");
-    console.log("String: ", test);
-    return test;
-  }
+// TODO: Look into npm Mitt; Only update `text` when ABSOLUTELY necessary!; Test for change in `text`/emitted-message
+const Console = () => {
+  const socket = io();
+  const element = useRef(null);
+  console.log("Console defined...");
+  useEffect(() => {
+    element.current = document.getElementById("console");
+    terminal.open(element.current);
+  }, []);
 
   socket.on("term.incData", (data) => {
-    console.log("console 2: ", typeof data, data);
-    if (shouldRender.current) {
-      shouldRender.current = false;
-      setText(data);
+    console.log("term.incData...");
+    const datas = JSON.parse(data);
+    terminal.write(datas.data);
+  });
+  terminal.onData((data) => {
+    console.log("onData...: ", data);
+    socket.emit("term.toTerm", data);
+  });
+  terminal.onKey(({ domEvent: { which } }) => {
+    console.log("onKey...", which);
+
+    if (which === 8) {
+      terminal.write("\b");
     }
   });
-  return (
-    <div id="console">
-      <input
-        type="text"
-        value={text}
-        onChange={handleInput}
-        onKeyPress={handleEnter}
-      ></input>
-    </div>
-  );
+
+  return <div id="console"></div>;
 };
 
 export default Console;

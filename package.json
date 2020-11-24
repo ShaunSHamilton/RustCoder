@@ -4,6 +4,7 @@
   "description": "A place to learn Rust",
   "main": "./public/bundle.js",
   "scripts": {
+    "start": "npm run build-dev && npm run dev",
     "tauri": "tauri",
     "dev": "node ./server/server.js",
     "build-dev": "webpack --mode=development"
