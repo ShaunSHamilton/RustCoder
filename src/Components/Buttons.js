@@ -8,7 +8,7 @@ const Buttons = (props) => {
         onClick={props.onSubmit}
         disabled={!props.isEditorReady}
       >
-        Submit
+        Next Challenge
       </button>
       <button id="docs" onClick={props.handleDocs}>
         Docs

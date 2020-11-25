@@ -9,23 +9,23 @@ const terminal = new Terminal();
 const Console = () => {
   const socket = io();
   const element = useRef(null);
-  console.log("Console defined...");
+  // console.log("Console defined...");
   useEffect(() => {
     element.current = document.getElementById("console");
     terminal.open(element.current);
   }, []);
 
   socket.on("term.incData", (data) => {
-    console.log("term.incData...");
+    // console.log("term.incData...");
     const datas = JSON.parse(data);
     terminal.write(datas.data);
   });
   terminal.onData((data) => {
-    console.log("onData...: ", data);
+    // console.log("onData...: ", data);
     socket.emit("term.toTerm", data);
   });
   terminal.onKey(({ domEvent: { which } }) => {
-    console.log("onKey...", which);
+    // console.log("onKey...", which);
 
     if (which === 8) {
       terminal.write("\b");
@@ -35,4 +35,4 @@ const Console = () => {
   return <div id="console"></div>;
 };
 
-export default Console;
+export default React.memo(Console);
