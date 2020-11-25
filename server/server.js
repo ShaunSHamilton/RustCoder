@@ -20,18 +20,18 @@ io.on("connection", (socket) => {
     env: process.env,
   });
 
-  ptyProcess.onData((data) => {
-    console.log("server: ", data);
-    io.emit("term.incData", JSON.stringify({ data }));
+  ptyProcess.onData((ptyData) => {
+    io.emit("term.incData", JSON.stringify({ ptyData }));
   });
 
-  socket.on("term.toTerm", (e) => {
-    console.log("server 2: ", e);
-    ptyProcess.write(e);
+  socket.on("term.toTerm", (xtermData) => {
+    ptyProcess.write(xtermData);
   });
 
   socket.on("disconnect", () => {
-    console.log("A user has disconnected");
+    console.log(
+      "Socket.io has disconnected...\n The terminal may not be working"
+    );
   });
 });
 

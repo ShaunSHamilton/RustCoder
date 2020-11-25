@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 
 const terminal = new Terminal();
 
-// TODO: Look into npm Mitt; Only update `text` when ABSOLUTELY necessary!; Test for change in `text`/emitted-message
+// TODO: Look into npm Mitt;
 const Console = () => {
   const socket = io();
   const element = useRef(null);
@@ -15,18 +15,16 @@ const Console = () => {
     terminal.open(element.current);
   }, []);
 
-  socket.on("term.incData", (data) => {
-    // console.log("term.incData...");
-    const datas = JSON.parse(data);
-    terminal.write(datas.data);
+  socket.on("term.incData", (ptyJSON) => {
+    const { ptyData } = JSON.parse(ptyJSON);
+    terminal.write(ptyData);
   });
-  terminal.onData((data) => {
-    // console.log("onData...: ", data);
-    socket.emit("term.toTerm", data);
+  terminal.onData((xtermData) => {
+    socket.emit("term.toTerm", xtermData);
   });
   terminal.onKey(({ domEvent: { which } }) => {
-    // console.log("onKey...", which);
-
+    // Have to specify backspace for terminal to receive
+    // data, and emit it.
     if (which === 8) {
       terminal.write("\b");
     }
