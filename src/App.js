@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./App.css";
 import Content from "./Components/Content";
-import Editor from "@monaco-editor/react";
+import { ControlledEditor } from "@monaco-editor/react";
 import Console from "./Components/Console";
 import ResizePanel from "react-resize-panel";
 import { emit, listen } from "tauri/api/event";
@@ -16,6 +16,8 @@ const editorOptions = {
   snippetSuggestions: true,
   scrollBeyondLastLine: false,
 };
+
+// TODO: When editor loses focus, send data
 function App() {
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [text, setText] = useState("");
@@ -36,6 +38,10 @@ function App() {
     });
   };
   const handleDocs = () => {};
+  const handleChange = (ev, value) => {
+    console.log("App: ", ev, value);
+    return value;
+  };
   return (
     <div id="app">
       <ResizePanel direction="e" containerClass="content-container">
@@ -46,13 +52,14 @@ function App() {
         />
       </ResizePanel>
       <section id="editor">
-        <Editor
+        <ControlledEditor
           height="100%"
           language="rust"
           options={editorOptions}
           theme="dark"
           value={"// write your code here"}
           editorDidMount={handleEditorDidMount}
+          onChange={handleChange}
         />
         {/* <iframe src="https://play.rust-lang.org/" id="frame"></iframe> */}
         <ResizePanel direction="n" containerClass="console-container">
