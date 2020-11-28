@@ -24,8 +24,7 @@ const Console = (props) => {
     socket.emit("term.toTerm", xtermData);
   });
   terminal.onKey(({ domEvent: { which } }) => {
-    // Have to specify backspace for terminal to receive
-    // data, and emit it.
+    // Have to specify backspace for terminal to receive data, and emit it.
     if (which === 8) {
       terminal.write("\b");
     }

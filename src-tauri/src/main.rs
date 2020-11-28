@@ -18,6 +18,7 @@ fn main() {
       use tauri::event::{listen, emit};
       use tauri_api::dialog::{pick_folder};
       use tauri_api::path::{resource_dir};
+      use tauri_api::dir::{read_dir};
       use nfd::Response::{Okay, OkayMultiple, Cancel};
       use cmd::{write_file,read_file};
       // const webviews: &mut Webview = webview.copy();
@@ -31,24 +32,11 @@ fn main() {
       // stored the 'lesson_files'
       listen(String::from("initialiseEnv"), move |msg| {
         println!("Initialising Environment...");
-        let default_path = resource_dir(); //.expect("Failed to get document_dir...");
-        println!("default_path: {:?}",default_path);
-        let mut s = String::new();
 
-        // let result = match pick_folder(default_path) {
-        //   Ok(t) => t,
-        //   Err(e) => panic!("panicked at...{}", e)
-        // };
-        // let result = pick_folder(std::option::Option::Some("./"));
-        //   Ok(t) => t,
-        //   Err(e) => println!("panicked at...{}", e)
-        // };
-        // lesson_folder_path = match result {
-        //   Okay(file_path) => file_path,
-        //   OkayMultiple(files) => String::from(&files[0]),
-        //   Cancel => String::from("./"),
-        // };
         lesson_folder_path = msg.unwrap();
+        // let src_folder: dyn AsRef<std::path::Path> = lesson_folder_path.clone().push_str::<>("/src").as_ref();
+        // let src_folders: dyn AsRef<std::path::Path> = src_folder;
+        // let files: Result<Vec::with_capacity(2: u8)> = read_dir(src_folders, false);
       
         println!("lesson_folder_path: {}",lesson_folder_path);
         emit(&mut webview, String::from("envInitialised"), Some("success".to_string()))
@@ -57,7 +45,7 @@ fn main() {
 
       // When user navigates to a new challenge, fetch the relevent file
       listen(String::from("setFile"), move |msg| {
-        println!("Setting file...{:?}", msg);
+        // println!("Setting file...{:?}", msg);
         file_name = msg.unwrap_or("Some".to_string());
       });
 

@@ -33,7 +33,6 @@ function App() {
     listen("envInitialised", () => {
       setIsEnvReady(true);
     });
-    console.log(window.__TAURI__);
     window.__TAURI__.dialog
       .open({
         defaultPath: null,
@@ -51,8 +50,6 @@ function App() {
       })
       .catch(console.log);
     window.__TAURI__.dialog.open({ directory: true }).then((res) => {
-      console.log(res);
-      // socket.emit("setDirectory", res);
       setDir(res);
       emit("initialiseEnv", res);
     });
@@ -66,10 +63,6 @@ function App() {
   const onSubmit = () => {
     const value = valueGetter.current();
     emit("submitCode", value);
-    // listen("rust-event", (e) => {
-    //   console.log(e.payload);
-    //   setText(e.payload.data);
-    // });
   };
   useEffect(() => {
     emit("setFile", "1-introduction.rs");

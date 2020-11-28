@@ -1,6 +1,6 @@
 // write your code here
 
 fn main() {
-    let a = String::from("Is this test working?");
-    println!("a: {}", a);
+    let test = String::from("Hello World!...");
+    println!("{} is not my name", test);
 }
