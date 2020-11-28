@@ -3,6 +3,7 @@
   --color-background: #555;
   --color-border: rgb(5, 98, 110);
   --color-theme: #033b5e;
+  --color-rust: rgb(145, 70, 0);
 
   --padding: 0.8rem;
 
@@ -23,6 +24,30 @@
   display: grid;
   grid-template-columns: auto 1fr;
 }
+
+/* WelcomeInit */
+
+#welcome {
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  text-align: center;
+  background-color: var(--color-theme);
+}
+
+#welcome > h1 {
+  color: var(--color-rust);
+}
+
+#welcome > p {
+  color: var(--color-text);
+}
+
+#welcome > button {
+  font-size: var(--font-size-button);
+}
+
+/* Monaco Editor */
 
 #editor {
   width: 100%;
@@ -60,6 +85,8 @@
   min-width: 300px !important;
 }
 
+/* Lesson Content */
+
 #content {
   width: 100%;
   height: 100vh;
@@ -81,6 +108,8 @@
 #challenge {
   padding: var(--padding);
 }
+
+/* Buttons.js */
 
 #buttons {
   padding: var(--padding);

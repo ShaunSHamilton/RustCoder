@@ -1,10 +1,12 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
+import WelcomeInit from "./Components/WelcomeInit";
 import Content from "./Components/Content";
 import { ControlledEditor } from "@monaco-editor/react";
 import Console from "./Components/Console";
 import ResizePanel from "react-resize-panel";
 import { emit, listen } from "tauri/api/event";
+import { io } from "socket.io-client";
 // import { invoke } from "tauri/api/tauri";
 
 const editorOptions = {
@@ -19,9 +21,42 @@ const editorOptions = {
 
 // TODO: When editor loses focus, send data
 function App() {
+  const [isEnvReady, setIsEnvReady] = useState(false);
   const [isEditorReady, setIsEditorReady] = useState(false);
-  const [text, setText] = useState("");
+  const [dir, setDir] = useState("");
+  // const [text, setText] = useState("");
   const valueGetter = useRef(() => "// Test");
+
+  const socket = io();
+
+  const handleInitEnv = () => {
+    listen("envInitialised", () => {
+      setIsEnvReady(true);
+    });
+    console.log(window.__TAURI__);
+    window.__TAURI__.dialog
+      .open({
+        defaultPath: null,
+      })
+      .then(function (res) {
+        console.log(res);
+        var pathToRead = res;
+        window.__TAURI__.fs
+          .readBinaryFile(pathToRead)
+          .then(function (response) {
+            console.log(response);
+            console.log(res);
+          })
+          .catch(console.log(res));
+      })
+      .catch(console.log);
+    window.__TAURI__.dialog.open({ directory: true }).then((res) => {
+      console.log(res);
+      // socket.emit("setDirectory", res);
+      setDir(res);
+      emit("initialiseEnv", res);
+    });
+  };
 
   const handleEditorDidMount = (_valueGetter) => {
     setIsEditorReady(true);
@@ -29,43 +64,57 @@ function App() {
   };
 
   const onSubmit = () => {
-    // alert(valueGetter.current());
     const value = valueGetter.current();
-    emit("codeSubmit", value);
-    listen("rust-event", (e) => {
-      console.log(e.payload);
-      setText(e.payload.data);
-    });
+    emit("submitCode", value);
+    // listen("rust-event", (e) => {
+    //   console.log(e.payload);
+    //   setText(e.payload.data);
+    // });
   };
+  useEffect(() => {
+    emit("setFile", "1-introduction.rs");
+  }, []);
   const handleDocs = () => {};
   const handleChange = (ev, value) => {
-    console.log("App: ", ev, value);
     return value;
+  };
+  const handleBlur = () => {
+    const value = valueGetter.current();
+    console.log(value);
+    emit("updateCode", value);
   };
   return (
     <div id="app">
-      <ResizePanel direction="e" containerClass="content-container">
-        <Content
-          onSubmit={onSubmit}
-          handleDocs={handleDocs}
-          isEditorReady={isEditorReady}
-        />
-      </ResizePanel>
-      <section id="editor">
-        <ControlledEditor
-          height="100%"
-          language="rust"
-          options={editorOptions}
-          theme="dark"
-          value={"// write your code here"}
-          editorDidMount={handleEditorDidMount}
-          onChange={handleChange}
-        />
-        {/* <iframe src="https://play.rust-lang.org/" id="frame"></iframe> */}
-        <ResizePanel direction="n" containerClass="console-container">
-          <Console text={text} />
-        </ResizePanel>
-      </section>
+      {isEnvReady ? (
+        <>
+          <ResizePanel direction="e" containerClass="content-container">
+            <Content
+              onSubmit={onSubmit}
+              handleDocs={handleDocs}
+              isEditorReady={isEditorReady}
+            />
+          </ResizePanel>
+          <section id="editor">
+            <div id="code" onBlur={handleBlur}>
+              <ControlledEditor
+                height="100%"
+                language="rust"
+                options={editorOptions}
+                theme="dark"
+                value={"// write your code here"}
+                editorDidMount={handleEditorDidMount}
+                onChange={handleChange}
+              />
+              {/* <iframe src="https://play.rust-lang.org/" id="frame"></iframe> */}
+            </div>
+            <ResizePanel direction="n" containerClass="console-container">
+              <Console dir={dir} />
+            </ResizePanel>
+          </section>
+        </>
+      ) : (
+        <WelcomeInit handleInitEnv={handleInitEnv} />
+      )}
     </div>
   );
 }

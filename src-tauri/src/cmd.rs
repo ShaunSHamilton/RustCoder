@@ -12,7 +12,7 @@ pub enum Cmd {
   MyCustomCommand { argument: String },
 }
 
-pub fn read_file(&file_path: String) -> std::io::Result<()> {
+pub fn read_file(file_path: &String) -> std::io::Result<()> {
     let file = File::open(file_path)?;
     let mut buf_reader = BufReader::new(file);
     let mut contents = String::new();
@@ -20,8 +20,8 @@ pub fn read_file(&file_path: String) -> std::io::Result<()> {
     Ok(())
 }
 
-pub fn write_file(&file_name: String, &contents: String) -> std::io::Result<()> {
+pub fn write_file(file_name: String, contents: String) -> std::io::Result<()> {
     let mut file = File::create(file_name)?;
-    file.write_all(contents)?;
+    file.write(contents.as_bytes())?;
     Ok(())
 }

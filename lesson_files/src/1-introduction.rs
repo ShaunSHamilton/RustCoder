@@ -1,2 +1,6 @@
-// Welcome Ruster!
-// Use this code editor to write your files
+// write your code here
+
+fn main() {
+    let a = String::from("Test...");
+    println!("A: {}", a);
+}

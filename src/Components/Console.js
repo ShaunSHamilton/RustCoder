@@ -6,11 +6,12 @@ import { io } from "socket.io-client";
 const terminal = new Terminal();
 
 // TODO: Look into npm Mitt;
-const Console = () => {
+const Console = (props) => {
   const socket = io();
   const element = useRef(null);
-  // console.log("Console defined...");
   useEffect(() => {
+    // Mount terminal on server:
+    socket.emit("mountTerm", props.dir);
     element.current = document.getElementById("console");
     terminal.open(element.current);
   }, []);

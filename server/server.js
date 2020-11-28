@@ -12,22 +12,23 @@ app.use(express.static("public"));
 
 io.on("connection", (socket) => {
   const shell = os.platform() === "win32" ? "powershell.exe" : "bash";
-  const ptyProcess = pty.spawn(shell, [], {
-    name: "xterm-color",
-    cols: 80,
-    rows: 30,
-    cwd: process.env.HOME,
-    env: process.env,
-  });
+  socket.on("mountTerm", (dir) => {
+    const ptyProcess = pty.spawn(shell, [], {
+      name: "xterm-color",
+      cols: 80,
+      rows: 30,
+      cwd: dir || process.env.HOME,
+      env: process.env,
+    });
 
-  ptyProcess.onData((ptyData) => {
-    io.emit("term.incData", JSON.stringify({ ptyData }));
-  });
+    ptyProcess.onData((ptyData) => {
+      io.emit("term.incData", JSON.stringify({ ptyData }));
+    });
 
-  socket.on("term.toTerm", (xtermData) => {
-    ptyProcess.write(xtermData);
+    socket.on("term.toTerm", (xtermData) => {
+      ptyProcess.write(xtermData);
+    });
   });
-
   socket.on("disconnect", () => {
     console.log(
       "Socket.io has disconnected...\n The terminal may not be working"
