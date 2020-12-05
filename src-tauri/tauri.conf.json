@@ -3,7 +3,7 @@
     "distDir": "../public",
     "devPath": "http://localhost:3000",
     "beforeDevCommand": "",
-    "beforeBuildCommand": "npm run build && npm run dev",
+    "beforeBuildCommand": "",
     "withGlobalTauri": true
   },
   "ctx": {},
@@ -22,7 +22,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "resources": ["./lessons"],
+      "resources": ["../server"],
       "externalBin": [],
       "copyright": "",
       "category": "Education",

@@ -4,7 +4,8 @@ const pty = require("node-pty");
 const app = express();
 const http = require("http").createServer(app);
 
-const PORT = 3000;
+// Dynamicall set port and start server
+const PORT = 8410;
 const io = require("socket.io")(http);
 io.serveClient(false);
 
