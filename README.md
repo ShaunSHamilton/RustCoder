@@ -4,3 +4,4 @@ RustCoder is a side-project started by Shaun Hamilton in 2020 (COVID...am I righ
 
 - Tauri
 - React
+- Node-pty

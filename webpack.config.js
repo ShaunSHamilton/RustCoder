@@ -1,14 +1,14 @@
 const path = require("path");
 
 module.exports = {
-  entry: "./server/server.js",
+  entry: "./src/index.js",
   output: {
     path: path.join(__dirname, "public"),
     filename: "bundle.js",
   },
-  node: {
-    __dirname: false,
-  },
+  // node: {
+  //   __dirname: false,
+  // },
   module: {
     rules: [
       {
@@ -19,13 +19,13 @@ module.exports = {
         test: /\.css$/,
         use: ["style-loader", "css-loader"],
       },
-      {
-        test: /\.node$/,
-        use: "node-loader",
-      },
+      // {
+      //   test: /\.node$/,
+      //   loader: "node-loader",
+      // },
     ],
   },
-  target: "node12.18",
+  // target: "node14.15",
   // resolve: {
   //   fallback: {
   //     os: require.resolve("os-browserify/browser"),
