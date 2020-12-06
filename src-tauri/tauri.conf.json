@@ -1,7 +1,7 @@
 {
   "build": {
     "distDir": "../public",
-    "devPath": "http://localhost:3000",
+    "devPath": "http://localhost:8420",
     "beforeDevCommand": "",
     "beforeBuildCommand": "",
     "withGlobalTauri": true
@@ -9,7 +9,8 @@
   "ctx": {},
   "tauri": {
     "embeddedServer": {
-      "active": true
+      "active": true,
+      "port": 8420
     },
     "bundle": {
       "active": true,

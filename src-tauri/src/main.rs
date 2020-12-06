@@ -16,10 +16,13 @@ fn main() {
   tauri::AppBuilder::new()
     .setup(|_webview, _source| {
       use tauri::event::{listen, emit};
-      use tauri_api::dialog::{pick_folder};
-      use tauri_api::path::{resource_dir};
-      use tauri_api::dir::{read_dir};
-      use nfd::Response::{Okay, OkayMultiple, Cancel};
+      // use tauri_api::dialog::{pick_folder};
+      // use tauri_api::path::{resource_dir};
+      // use tauri_api::dir::{read_dir};
+      // use tauri_api::config::{get,Config,TauriConfig, EmbeddedServerConfig};
+      use tauri_api::command::spawn_relative_command;
+      use std::process::Stdio;
+      // use nfd::Response::{Okay, OkayMultiple, Cancel};
       use cmd::{write_file,read_file};
       // const webviews: &mut Webview = webview.copy();
       let mut webview = _webview.as_mut();
@@ -27,6 +30,13 @@ fn main() {
 
       let mut lesson_folder_path = String::from("./");
 
+      let res = spawn_relative_command(String::from("node ./server/server.js"), vec!(), Stdio::piped());
+      let conf = match res {
+        Ok(t) => t,
+        Err(_) => panic!("Could not get config from tauri...")
+      };
+
+      println!("res: {:?}",conf);
 
       // When user initialises the app, a dialog opens - asking where the user has
       // stored the 'lesson_files'
