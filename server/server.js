@@ -5,11 +5,11 @@ const app = express();
 const http = require("http").createServer(app);
 
 // Dynamicall set port and start server
-const PORT = 8410;
+const PORT = 8420;
 const io = require("socket.io")(http);
 io.serveClient(false);
 
-app.use(express.static("public"));
+app.use(express.static("../../../public"));
 
 io.on("connection", (socket) => {
   const shell = os.platform() === "win32" ? "powershell.exe" : "bash";
