@@ -13,6 +13,27 @@ struct Reply {
 }
 
 fn main() {
+  // use tauri_api::command::spawn_relative_command;
+  // use std::process::Stdio;
+  server_command();
+
+  // Development
+  // let res = spawn_relative_command(String::from("node"), vec!("--".to_string()), Stdio::piped());
+  
+  // // Production
+  // // let res = spawn_relative_command(String::from("node ./server-dist/bundle_server.js"), vec!(), Stdio::piped());
+  // let conf = match res {
+  //   Ok(t) => t,
+  //   Err(e) => {
+  //     println!("{}", e);
+  //     panic!("Could not get config from tauri...")
+  //   }
+  // };
+
+  // let output = conf.wait_with_output().expect("Failed to read stdout");
+  // println!("{}",String::from_utf8_lossy(&output.stdout));
+  // println!("res: {:?}",conf);
+
   tauri::AppBuilder::new()
     .setup(|_webview, _source| {
       use tauri::event::{listen, emit};
@@ -20,8 +41,8 @@ fn main() {
       // use tauri_api::path::{resource_dir};
       // use tauri_api::dir::{read_dir};
       // use tauri_api::config::{get,Config,TauriConfig, EmbeddedServerConfig};
-      use tauri_api::command::spawn_relative_command;
-      use std::process::Stdio;
+      // use tauri_api::command::spawn_relative_command;
+      // use std::process::Stdio;
       // use nfd::Response::{Okay, OkayMultiple, Cancel};
       use cmd::{write_file,read_file};
       // const webviews: &mut Webview = webview.copy();
@@ -30,13 +51,19 @@ fn main() {
 
       let mut lesson_folder_path = String::from("./");
 
-      let res = spawn_relative_command(String::from("node ./server/server.js"), vec!(), Stdio::piped());
-      let conf = match res {
-        Ok(t) => t,
-        Err(_) => panic!("Could not get config from tauri...")
-      };
+      // Development
+      // let res = spawn_relative_command(String::from("node ../../server-dist/bundle_server.js"), vec!(), Stdio::piped());
+      
+      // // Production
+      // // let res = spawn_relative_command(String::from("node ./server-dist/bundle_server.js"), vec!(), Stdio::piped());
+      // let conf = match res {
+      //   Ok(t) => t,
+      //   Err(_) => panic!("Could not get config from tauri...")
+      // };
 
-      println!("res: {:?}",conf);
+      // let output = conf.wait_with_output().expect("Failed to read stdout");
+      // println!("{}",String::from_utf8_lossy(&output.stdout));
+      // println!("res: {:?}",conf);
 
       // When user initialises the app, a dialog opens - asking where the user has
       // stored the 'lesson_files'
@@ -62,7 +89,7 @@ fn main() {
       // When user unfocusses from editor, write code to relevant file
       listen(String::from("updateCode"), move |msg| {
         println!("JS-event with message '{:?}'", msg);
-        let reply = Reply {
+        let _reply = Reply {
           data: "Saved code to file...".to_string(),
         };
 
@@ -75,7 +102,7 @@ fn main() {
       
       listen(String::from("submitCode"), move |msg| {
         println!("got js-event with message '{:?}'", msg);
-        let reply = Reply {
+        let _reply = Reply {
           data: "// Running tests...\n// Test results".to_string(),
         };
 
@@ -87,4 +114,14 @@ fn main() {
     })
     .build()
     .run();
+}
+
+
+fn server_command() {
+  use std::process::Command;
+  use tauri_utils::platform::resource_dir;
+  Command::new(
+    "node".to_string()
+  ).current_dir(resource_dir().expect("failed here...")).arg("./server-dist/bundle_server.js".to_string())
+  .spawn().expect("Failed here...");
 }

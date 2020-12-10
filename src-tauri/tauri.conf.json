@@ -9,8 +9,7 @@
   "ctx": {},
   "tauri": {
     "embeddedServer": {
-      "active": true,
-      "port": 8420
+      "active": false
     },
     "bundle": {
       "active": true,
@@ -23,7 +22,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "resources": ["../server"],
+      "resources": ["../server-dist/bundle_server.js"],
       "externalBin": [],
       "copyright": "",
       "category": "Education",
