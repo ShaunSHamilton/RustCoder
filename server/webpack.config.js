@@ -3,11 +3,18 @@ const path = require("path");
 module.exports = {
   entry: "./server.js",
   output: {
-    path: path.join(__dirname, "../server-dist"),
-    filename: "bundle_server.js",
+    path: path.join(__dirname, "../dist"),
+    filename: "bundle-server.js",
   },
   node: {
     __dirname: false,
+  },
+  externals: {
+    uws: "uws",
+    ws: "ws",
+    express: "express",
+    "socket.io": "socket.io",
+    "node-pty": "node-pty",
   },
   module: {
     rules: [
@@ -25,7 +32,7 @@ module.exports = {
       },
     ],
   },
-  target: "node14.15",
+  target: "node",
   // resolve: {
   //   fallback: {
   //     os: require.resolve("os-browserify/browser"),

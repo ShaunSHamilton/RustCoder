@@ -6,7 +6,8 @@ const http = require("http").createServer(app);
 
 // Dynamicall set port and start server
 const PORT = 8420;
-const io = require("socket.io")(http);
+const sock = require("socket.io");
+const io = sock(http);
 io.serveClient(false);
 
 app.use(express.static("../../../public"));

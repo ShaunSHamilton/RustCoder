@@ -22,7 +22,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "resources": ["../server-dist/bundle_server.js"],
+      "resources": ["../dist/bundle-server.js"],
       "externalBin": [],
       "copyright": "",
       "category": "Education",
