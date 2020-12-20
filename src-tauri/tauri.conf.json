@@ -1,7 +1,7 @@
 {
   "build": {
     "distDir": "../public",
-    "devPath": "http://localhost:3000",
+    "devPath": "http://localhost:8420",
     "beforeDevCommand": "",
     "beforeBuildCommand": "",
     "withGlobalTauri": true
@@ -9,7 +9,7 @@
   "ctx": {},
   "tauri": {
     "embeddedServer": {
-      "active": true
+      "active": false
     },
     "bundle": {
       "active": true,
@@ -22,7 +22,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "resources": ["../server"],
+      "resources": ["../dist/bundle-server.js"],
       "externalBin": [],
       "copyright": "",
       "category": "Education",
